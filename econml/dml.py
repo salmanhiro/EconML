@@ -514,7 +514,7 @@ class DML(LinearModelFinalCateEstimatorMixin, _BaseDML):
     @_deprecate_positional("X and W should be passed by keyword only. In a future release "
                            "we will disallow passing X and W by position.", ['X', 'W'])
     def fit(self, Y, T, X=None, W=None, *, sample_weight=None, sample_var=None, groups=None,
-            cache_values=False, inference='auto'):
+            cache_values=False, monte_carlo_iterations=None, inference='auto'):
         """
         Estimate the counterfactual model from data, i.e. estimates functions τ(·,·,·), ∂τ(·,·).
 
@@ -536,6 +536,8 @@ class DML(LinearModelFinalCateEstimatorMixin, _BaseDML):
             must support a 'groups' argument to its split method.
         cache_values: bool, default False
             Whether to cache inputs and first stage results, which will allow refitting a different final model
+        monte_carlo_iterations: int, optional
+            The number of times to rerun the first stage models to reduce the variance of the nuisances.
         inference: string, :class:`.Inference` instance, or None
             Method for performing inference.  This estimator supports 'bootstrap'
             (or an instance of :class:`.BootstrapInference`) and 'auto'
@@ -546,7 +548,8 @@ class DML(LinearModelFinalCateEstimatorMixin, _BaseDML):
         self
         """
         return super().fit(Y, T, X=X, W=W, sample_weight=sample_weight, sample_var=sample_var, groups=groups,
-                           cache_values=cache_values, inference=inference)
+                           cache_values=cache_values, monte_carlo_iterations=monte_carlo_iterations,
+                           inference=inference)
 
     @property
     def linear_first_stages(self):
@@ -701,7 +704,7 @@ class LinearDML(StatsModelsCateEstimatorMixin, DML):
     @_deprecate_positional("X and W should be passed by keyword only. In a future release "
                            "we will disallow passing X and W by position.", ['X', 'W'])
     def fit(self, Y, T, X=None, W=None, *, sample_weight=None, sample_var=None, groups=None,
-            cache_values=False, inference='auto'):
+            cache_values=False, monte_carlo_iterations=None, inference='auto'):
         """
         Estimate the counterfactual model from data, i.e. estimates functions τ(·,·,·), ∂τ(·,·).
 
@@ -725,6 +728,8 @@ class LinearDML(StatsModelsCateEstimatorMixin, DML):
             must support a 'groups' argument to its split method.
         cache_values: bool, default False
             Whether to cache inputs and first stage results, which will allow refitting a different final model
+        monte_carlo_iterations: int, optional
+            The number of times to rerun the first stage models to reduce the variance of the nuisances.
         inference: string, :class:`.Inference` instance, or None
             Method for performing inference.  This estimator supports 'bootstrap'
             (or an instance of :class:`.BootstrapInference`) and 'statsmodels'
@@ -736,7 +741,8 @@ class LinearDML(StatsModelsCateEstimatorMixin, DML):
         """
         return super().fit(Y, T, X=X, W=W,
                            sample_weight=sample_weight, sample_var=sample_var, groups=groups,
-                           cache_values=cache_values, inference=inference)
+                           cache_values=cache_values, monte_carlo_iterations=monte_carlo_iterations,
+                           inference=inference)
 
     @DML.model_final.setter
     def model_final(self, model):
@@ -861,7 +867,7 @@ class SparseLinearDML(DebiasedLassoCateEstimatorMixin, DML):
     @_deprecate_positional("X and W should be passed by keyword only. In a future release "
                            "we will disallow passing X and W by position.", ['X', 'W'])
     def fit(self, Y, T, X=None, W=None, *, sample_weight=None, sample_var=None, groups=None,
-            cache_values=False, inference='auto'):
+            cache_values=False, monte_carlo_iterations=None, inference='auto'):
         """
         Estimate the counterfactual model from data, i.e. estimates functions τ(·,·,·), ∂τ(·,·).
 
@@ -886,6 +892,8 @@ class SparseLinearDML(DebiasedLassoCateEstimatorMixin, DML):
             must support a 'groups' argument to its split method.
         cache_values: bool, default False
             Whether to cache inputs and first stage results, which will allow refitting a different final model
+        monte_carlo_iterations: int, optional
+            The number of times to rerun the first stage models to reduce the variance of the nuisances.
         inference: string, `Inference` instance, or None
             Method for performing inference.  This estimator supports 'bootstrap'
             (or an instance of :class:`.BootstrapInference`) and 'debiasedlasso'
@@ -906,7 +914,7 @@ class SparseLinearDML(DebiasedLassoCateEstimatorMixin, DML):
                                "We recommend using the LinearDML estimator for this low-dimensional setting.")
         return super().fit(Y, T, X=X, W=W,
                            sample_weight=sample_weight, sample_var=None, groups=groups,
-                           cache_values=cache_values, inference=inference)
+                           cache_values=cache_values, monte_carlo_iterations=None, inference=inference)
 
     @DML.model_final.setter
     def model_final(self, model):
@@ -1417,7 +1425,7 @@ class ForestDML(ForestModelFinalCateEstimatorMixin, NonParamDML):
     @_deprecate_positional("X and W should be passed by keyword only. In a future release "
                            "we will disallow passing X and W by position.", ['X', 'W'])
     def fit(self, Y, T, X=None, W=None, *, sample_weight=None, sample_var=None, groups=None,
-            cache_values=False, inference='auto'):
+            cache_values=False, monte_carlo_iterations=None, inference='auto'):
         """
         Estimate the counterfactual model from data, i.e. estimates functions τ(·,·,·), ∂τ(·,·).
 
@@ -1442,6 +1450,8 @@ class ForestDML(ForestModelFinalCateEstimatorMixin, NonParamDML):
             must support a 'groups' argument to its split method.
         cache_values: bool, default False
             Whether to cache inputs and first stage results, which will allow refitting a different final model
+        monte_carlo_iterations: int, optional
+            The number of times to rerun the first stage models to reduce the variance of the nuisances.
         inference: string, `Inference` instance, or None
             Method for performing inference.  This estimator supports 'bootstrap'
             (or an instance of :class:`.BootstrapInference`) and 'blb'
@@ -1453,7 +1463,8 @@ class ForestDML(ForestModelFinalCateEstimatorMixin, NonParamDML):
         """
         return super().fit(Y, T, X=X, W=W,
                            sample_weight=sample_weight, sample_var=None, groups=groups,
-                           cache_values=cache_values, inference=inference)
+                           cache_values=cache_values, monte_carlo_iterations=monte_carlo_iterations,
+                           inference=inference)
 
     @DML.model_final.setter
     def model_final(self, model):

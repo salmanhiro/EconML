@@ -1112,3 +1112,11 @@ class TestDML(unittest.TestCase):
             ldml.refit()
         with pytest.raises(Exception):
             dml.refit()
+
+    def test_montecarlo(self):
+        """Test that we can perform nuisance averaging."""
+        y = np.random.normal(size=30) + [0, 1] * 15
+        T = np.random.normal(size=(30,)) + y
+        W = np.random.normal(size=(30, 3))
+        est = LinearDML(model_y=LinearRegression(), model_t=LinearRegression())
+        est.fit(y, T, W=W, monte_carlo_iterations=2).effect()
