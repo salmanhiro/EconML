@@ -404,7 +404,8 @@ class _RLearner(_OrthoLearner):
     @_OrthoLearner.model_nuisance.setter
     def model_nuisance(self, model):
         raise AttributeError("Nuisance model cannot be set directly on an _RLearner instance; "
-                             "set the model_y and model_t attributes insetad.")
+                             "set the model_y and model_t attributes instead.")
+
 
     @_OrthoLearner.discrete_instrument.setter
     def discrete_instrument(self, flag):
